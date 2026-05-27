@@ -2,12 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 
-const groqApiKey = process.env.GROQ_API_KEY;
-
-const groq = new Groq({
-  apiKey: groqApiKey,
-});
-
 const allowedDifficulties = ["Easy", "Medium", "Hard"] as const;
 
 type QuizQuestion = {
@@ -34,17 +28,19 @@ function parseQuizContent(content: string): QuizQuestion[] {
     throw new Error("Quiz response was missing questions.");
   }
 
-  const questions = parsed.questions.map((question: QuizQuestion) => ({
+  const questions: QuizQuestion[] = parsed.questions.map(
+    (question: QuizQuestion) => ({
     question: String(question.question ?? "").trim(),
     options: Array.isArray(question.options)
       ? question.options.map((option) => String(option))
       : [],
     correctAnswer: String(question.correctAnswer ?? "").trim(),
     explanation: String(question.explanation ?? "").trim(),
-  }));
+  }),
+  );
 
   const sanitized = questions.filter(
-    (question) =>
+    (question: QuizQuestion) =>
       question.question &&
       question.options.length >= 2 &&
       question.correctAnswer,
@@ -71,17 +67,22 @@ function parseQuizContent(content: string): QuizQuestion[] {
 }
 
 export async function POST(request: Request) {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const groqApiKey = process.env.GROQ_API_KEY;
   if (!groqApiKey) {
     return NextResponse.json(
       { error: "Missing GROQ API key." },
       { status: 500 },
     );
   }
+
+  const groq = new Groq({
+    apiKey: groqApiKey,
+  });
 
   try {
     const body = await request.json();
