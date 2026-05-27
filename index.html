@@ -1,0 +1,657 @@
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+         <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>QuizzerAI - Generate Quizzes Instantly</title>
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
+     rel="stylesheet">
+
+         <style>
+              {
+                 margin: 0;
+                 padding: 0;
+                 box-sizing: border-box;
+             }
+
+             :root {
+                 --primary-bg: #0f172a;
+                 --secondary-bg: #1a2847;
+                 --card-bg: #1f3a5f;
+                 --text-primary: #ffffff;
+                 --text-secondary: #94a3b8;
+                 --accent: #3b82f6;
+                 --accent-hover: #2563eb;
+                 --success: #10b981;
+                 --border: #334155;
+             }
+
+             html {
+                 scroll-behavior: smooth;
+             }
+
+             body {
+                 font-family: 'Inter', sans-serif;
+                 background-color: var(--primary-bg);
+                 color: var(--text-primary);
+                 line-height: 1.6;
+                 overflow-x: hidden;
+             }
+
+             / Navigation Bar /
+             nav {
+                 background-color: var(--secondary-bg);
+                 padding: 1.5rem 2rem;
+                 position: sticky;
+                 top: 0;
+                 z-index: 100;
+                 border-bottom: 1px solid var(--border);
+                 backdrop-filter: blur(10px);
+                 background-color: rgba(26, 40, 71, 0.95);
+             }
+
+             .nav-container {
+                 max-width: 1200px;
+                 margin: 0 auto;
+                 display: flex;
+                 justify-content: space-between;
+                 align-items: center;
+             }
+
+             .logo {
+                 font-family: 'Poppins', sans-serif;
+                 font-size: 1.5rem;
+                 font-weight: 700;
+                 background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+                 -webkit-background-clip: text;
+                 -webkit-text-fill-color: transparent;
+                 background-clip: text;
+                 cursor: pointer;
+                 transition: transform 0.3s ease;
+             }
+
+             .logo:hover {
+                 transform: scale(1.05);
+             }
+
+             .nav-links {
+                 display: flex;
+                 gap: 2rem;
+                 list-style: none;
+             }
+
+             .nav-links a {
+                 color: var(--text-secondary);
+                 text-decoration: none;
+                 font-weight: 500;
+                 transition: color 0.3s ease;
+                 position: relative;
+             }
+
+             .nav-links a:hover {
+                 color: var(--accent);
+             }
+
+             .nav-links a::after {
+                 content: '';
+                 position: absolute;
+                 bottom: -5px;
+                 left: 0;
+                 width: 0;
+                 height: 2px;
+                 background-color: var(--accent);
+                 transition: width 0.3s ease;
+             }
+
+             .nav-links a:hover::after {
+                 width: 100%;
+             }
+
+             / Hero Section /
+             .hero {
+                 min-height: 90vh;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 padding: 4rem 2rem;
+                 background: linear-gradient(135deg, #0f172a 0%, #1a2847 100%);
+                 position: relative;
+                 overflow: hidden;
+             }
+
+             .hero::before {
+                 content: '';
+                 position: absolute;
+                 width: 400px;
+                 height: 400px;
+                 background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+                 border-radius: 50%;
+                 top: -100px;
+                 right: -100px;
+                 animation: float 6s ease-in-out infinite;
+             }
+
+             .hero::after {
+                 content: '';
+                 position: absolute;
+                 width: 300px;
+                 height: 300px;
+                 background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+                 border-radius: 50%;
+                 bottom: -50px;
+                 left: -50px;
+                 animation: float 8s ease-in-out infinite reverse;
+             }
+
+             @keyframes float {
+                 0%, 100% {
+                     transform: translateY(0px);
+                 }
+                 50% {
+                     transform: translateY(30px);
+                 }
+             }
+
+             .hero-content {
+                 max-width: 700px;
+                 text-align: center;
+                 z-index: 10;
+                 animation: slideUp 0.8s ease-out;
+             }
+
+             @keyframes slideUp {
+                 from {
+                     opacity: 0;
+                     transform: translateY(30px);
+                 }
+                 to {
+                     opacity: 1;
+                     transform: translateY(0);
+                 }
+             }
+
+             .hero h1 {
+                 font-family: 'Poppins', sans-serif;
+                 font-size: clamp(2.5rem, 8vw, 4rem);
+                 font-weight: 800;
+                 margin-bottom: 1rem;
+                 background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+                 -webkit-background-clip: text;
+                 -webkit-text-fill-color: transparent;
+                 background-clip: text;
+             }
+
+             .hero p {
+                 font-size: clamp(1rem, 3vw, 1.5rem);
+                 color: var(--text-secondary);
+                 margin-bottom: 2.5rem;
+                 font-weight: 300;
+             }
+
+             .input-group {
+                 display: flex;
+                 gap: 1rem;
+                 margin-bottom: 2rem;
+                 flex-direction: column;
+                 align-items: center;
+             }
+
+             .input-group input {
+                 width: 100%;
+                 max-width: 500px;
+                 padding: 1rem 1.5rem;
+                 background-color: var(--card-bg);
+                 border: 1px solid var(--border);
+                 border-radius: 8px;
+                 color: var(--text-primary);
+                 font-size: 1rem;
+                 font-family: 'Inter', sans-serif;
+                 transition: all 0.3s ease;
+             }
+
+             .input-group input:focus {
+                 outline: none;
+                 border-color: var(--accent);
+                 box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+                 background-color: rgba(31, 58, 95, 0.8);
+             }
+
+             .input-group input::placeholder {
+                 color: var(--text-secondary);
+             }
+
+             .btn {
+                 padding: 1rem 2.5rem;
+                 background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+                 color: white;
+                 border: none;
+                 border-radius: 8px;
+                 font-size: 1rem;
+                 font-weight: 600;
+                 font-family: 'Inter', sans-serif;
+                 cursor: pointer;
+                 transition: all 0.3s ease;
+                 box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+                 max-width: 500px;
+                 width: 100%;
+             }
+
+             .btn:hover {
+                 transform: translateY(-2px);
+                 box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+             }
+
+             .btn:active {
+                 transform: translateY(0);
+             }
+
+             / Quiz Section /
+             .quiz-section {
+                 max-width: 900px;
+                 margin: 4rem auto;
+                 padding: 2rem;
+             }
+
+             .section-title {
+                 font-family: 'Poppins', sans-serif;
+                 font-size: 2rem;
+                 font-weight: 700;
+                 margin-bottom: 3rem;
+                 text-align: center;
+                 color: var(--text-primary);
+             }
+
+             .questions-container {
+                 display: grid;
+                 gap: 2rem;
+             }
+
+             .question-card {
+                 background-color: var(--card-bg);
+                 border: 1px solid var(--border);
+                 border-radius: 12px;
+                 padding: 2rem;
+                 transition: all 0.3s ease;
+                 animation: slideUp 0.8s ease-out forwards;
+                 opacity: 0;
+             }
+
+             .question-card:nth-child(1) { animation-delay: 0.1s; }
+             .question-card:nth-child(2) { animation-delay: 0.2s; }
+             .question-card:nth-child(3) { animation-delay: 0.3s; }
+             .question-card:nth-child(4) { animation-delay: 0.4s; }
+             .question-card:nth-child(5) { animation-delay: 0.5s; }
+
+             .question-card:hover {
+                 border-color: var(--accent);
+                 box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+                 transform: translateY(-4px);
+             }
+
+             .question-number {
+                 display: inline-block;
+                 background-color: var(--accent);
+                 color: white;
+                 padding: 0.4rem 0.8rem;
+                 border-radius: 6px;
+                 font-size: 0.875rem;
+                 font-weight: 600;
+                 margin-bottom: 1rem;
+             }
+
+             .question-text {
+                 font-size: 1.1rem;
+                 font-weight: 600;
+                 margin-bottom: 1.5rem;
+                 color: var(--text-primary);
+             }
+
+             .options-group {
+                 display: grid;
+                 gap: 1rem;
+             }
+
+             .option {
+                 display: flex;
+                 align-items: center;
+                 padding: 1rem;
+                 background-color: rgba(31, 58, 95, 0.5);
+                 border: 1px solid var(--border);
+                 border-radius: 8px;
+                 cursor: pointer;
+                 transition: all 0.3s ease;
+             }
+
+             .option:hover {
+                 background-color: var(--card-bg);
+                 border-color: var(--accent);
+                 transform: translateX(4px);
+             }
+
+             .option input[type="radio"] {
+                 margin-right: 1rem;
+                 width: 18px;
+                 height: 18px;
+                 cursor: pointer;
+                 accent-color: var(--accent);
+             }
+
+             .option label {
+                 cursor: pointer;
+                 flex: 1;
+                 color: var(--text-secondary);
+                 font-weight: 500;
+             }
+
+             / Footer /
+             footer {
+                 background-color: var(--secondary-bg);
+                 border-top: 1px solid var(--border);
+                 padding: 2rem;
+                 text-align: center;
+                 margin-top: 6rem;
+             }
+
+             footer p {
+                 color: var(--text-secondary);
+                 font-weight: 500;
+             }
+
+             footer a {
+                 color: var(--accent);
+                 text-decoration: none;
+                 transition: color 0.3s ease;
+             }
+
+             footer a:hover {
+                 color: var(--accent-hover);
+             }
+
+             / Responsive Design /
+             @media (max-width: 768px) {
+                 .nav-links {
+                     gap: 1rem;
+                 }
+
+                 .hero {
+                     min-height: 70vh;
+                     padding: 2rem 1rem;
+                 }
+
+                 .hero h1 {
+                     margin-bottom: 0.5rem;
+                 }
+
+                 .input-group {
+                     gap: 0.75rem;
+                 }
+
+                 .quiz-section {
+                     padding: 1rem;
+                 }
+
+                 .section-title {
+                     font-size: 1.5rem;
+                 }
+
+                 .question-card {
+                     padding: 1.5rem;
+                 }
+
+                 .question-text {
+                     font-size: 1rem;
+                 }
+             }
+
+             @media (max-width: 480px) {
+                 nav {
+                     padding: 1rem;
+                 }
+
+                 .logo {
+                     font-size: 1.2rem;
+                 }
+
+                 .nav-links {
+                     gap: 0.75rem;
+                     font-size: 0.9rem;
+                 }
+
+                 .hero h1 {
+                     font-size: 1.8rem;
+                 }
+
+                 .hero p {
+                     font-size: 1rem;
+                 }
+
+                 .btn {
+                     padding: 0.875rem 1.5rem;
+                     font-size: 0.95rem;
+                 }
+             }
+
+             / Scrollbar Styling */
+             ::-webkit-scrollbar {
+                 width: 10px;
+             }
+
+             ::-webkit-scrollbar-track {
+                 background: var(--primary-bg);
+             }
+
+             ::-webkit-scrollbar-thumb {
+                 background: var(--border);
+                 border-radius: 5px;
+             }
+
+             ::-webkit-scrollbar-thumb:hover {
+                 background: var(--accent);
+             }
+         </style>
+     </head>
+     <body>
+         <!-- Navigation Bar -->
+         <nav>
+             <div class="nav-container">
+                 <div class="logo">QuizzerAI</div>
+                 <ul class="nav-links">
+                     <li><a href="#home">Home</a></li>
+                     <li><a href="#about">About</a></li>
+                 </ul>
+             </div>
+         </nav>
+
+         <!-- Hero Section -->
+         <section class="hero" id="home">
+             <div class="hero-content">
+                 <h1>QuizzerAI</h1>
+                 <p>Generate quizzes instantly using AI</p>
+                 <div class="input-group">
+                     <input
+                         type="text"
+                         placeholder="Enter a topic (e.g. Photosynthesis)"
+                         id="topicInput"
+                         aria-label="Topic input"
+                     >
+                     <button class="btn" onclick="handleGenerateQuiz()">Generate Quiz</button>
+                 </div>
+             </div>
+         </section>
+
+         <!-- Quiz Display Section -->
+         <section class="quiz-section" id="about">
+             <h2 class="section-title">Sample Quiz Questions</h2>
+
+             <div class="questions-container">
+                 <!-- Question 1 -->
+                 <div class="question-card">
+                     <span class="question-number">Question 1</span>
+                     <p class="question-text">What is the primary function of photosynthesis?</p>
+                     <div class="options-group">
+                         <div class="option">
+                             <input type="radio" id="q1_a" name="question1" value="a">
+                             <label for="q1_a"><strong>A.</strong> To convert light energy into chemical energy</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q1_b" name="question1" value="b">
+                             <label for="q1_b"><strong>B.</strong> To break down glucose for energy</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q1_c" name="question1" value="c">
+                             <label for="q1_c"><strong>C.</strong> To produce ATP in the mitochondria</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q1_d" name="question1" value="d">
+                             <label for="q1_d"><strong>D.</strong> To transport nutrients across cell membranes</label>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Question 2 -->
+                 <div class="question-card">
+                     <span class="question-number">Question 2</span>
+                     <p class="question-text">Which of the following is NOT a greenhouse gas?</p>
+                     <div class="options-group">
+                         <div class="option">
+                             <input type="radio" id="q2_a" name="question2" value="a">
+                             <label for="q2_a"><strong>A.</strong> Carbon Dioxide (CO2)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q2_b" name="question2" value="b">
+                             <label for="q2_b"><strong>B.</strong> Methane (CH4)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q2_c" name="question2" value="c">
+                             <label for="q2_c"><strong>C.</strong> Nitrogen (N2)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q2_d" name="question2" value="d">
+                             <label for="q2_d"><strong>D.</strong> Nitrous Oxide (N2O)</label>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Question 3 -->
+                 <div class="question-card">
+                     <span class="question-number">Question 3</span>
+                     <p class="question-text">What is the powerhouse of the cell?</p>
+                     <div class="options-group">
+                         <div class="option">
+                             <input type="radio" id="q3_a" name="question3" value="a">
+                             <label for="q3_a"><strong>A.</strong> Nucleus</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q3_b" name="question3" value="b">
+                             <label for="q3_b"><strong>B.</strong> Mitochondria</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q3_c" name="question3" value="c">
+                             <label for="q3_c"><strong>C.</strong> Ribosome</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q3_d" name="question3" value="d">
+                             <label for="q3_d"><strong>D.</strong> Chloroplast</label>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Question 4 -->
+                 <div class="question-card">
+                     <span class="question-number">Question 4</span>
+                     <p class="question-text">Which element has the atomic number 6?</p>
+                     <div class="options-group">
+                         <div class="option">
+                             <input type="radio" id="q4_a" name="question4" value="a">
+                             <label for="q4_a"><strong>A.</strong> Oxygen (O)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q4_b" name="question4" value="b">
+                             <label for="q4_b"><strong>B.</strong> Nitrogen (N)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q4_c" name="question4" value="c">
+                             <label for="q4_c"><strong>C.</strong> Carbon (C)</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q4_d" name="question4" value="d">
+                             <label for="q4_d"><strong>D.</strong> Hydrogen (H)</label>
+                         </div>
+                     </div>
+                 </div>
+
+                 <!-- Question 5 -->
+                 <div class="question-card">
+                     <span class="question-number">Question 5</span>
+                     <p class="question-text">What is the process by which plants lose water through leaves?</p>
+                     <div class="options-group">
+                         <div class="option">
+                             <input type="radio" id="q5_a" name="question5" value="a">
+                             <label for="q5_a"><strong>A.</strong> Evaporation</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q5_b" name="question5" value="b">
+                             <label for="q5_b"><strong>B.</strong> Transpiration</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q5_c" name="question5" value="c">
+                             <label for="q5_c"><strong>C.</strong> Condensation</label>
+                         </div>
+                         <div class="option">
+                             <input type="radio" id="q5_d" name="question5" value="d">
+                             <label for="q5_d"><strong>D.</strong> Precipitation</label>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </section>
+
+         <!-- Footer -->
+         <footer>
+             <p>Built by <a href="https://github.com/Hndrd0" target="_blank">Hardik</a></p>
+         </footer>
+
+         <script>
+             function handleGenerateQuiz() {
+                 const topicInput = document.getElementById('topicInput');
+                 const topic = topicInput.value.trim();
+
+                 if (topic) {
+                     // Scroll to quiz section
+                     const quizSection = document.getElementById('about');
+                     quizSection.scrollIntoView({ behavior: 'smooth' });
+
+                     // Visual feedback
+                     const btn = event.target;
+                     btn.textContent = 'Generated! ✓';
+                     setTimeout(() => {
+                         btn.textContent = 'Generate Quiz';
+                     }, 2000);
+                 } else {
+                     alert('Please enter a topic to generate a quiz!');
+                     topicInput.focus();
+                 }
+             }
+
+             // Allow Enter key to generate quiz
+             document.getElementById('topicInput').addEventListener('keypress', function(e) {
+                 if (e.key === 'Enter') {
+                     handleGenerateQuiz();
+                 }
+             });
+
+             // Smooth scroll for navigation links
+             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                 anchor.addEventListener('click', function (e) {
+                     e.preventDefault();
+                     const target = document.querySelector(this.getAttribute('href'));
+                     if (target) {
+                         target.scrollIntoView({ behavior: 'smooth' });
+                     }
+                 });
+             });
+         </script>
+     </body>
+     </html>
